@@ -1,4 +1,4 @@
-# Ruby Condition Varaible Timeout
+# Ruby Condition Variable Timeout
 
 This example code demonstrates the unfair scheduling of threads when using a condition variable.
 
