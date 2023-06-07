@@ -2,6 +2,9 @@
 
 This example code demonstrates the unfair scheduling of threads when using a condition variable.
 
+- Original bug report: https://github.com/socketry/async/issues/99
+- Ruby bug report: https://bugs.ruby-lang.org/issues/19717
+
 ## Usage
 
 ```bash
