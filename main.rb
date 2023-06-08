@@ -40,16 +40,17 @@ WORKER_COUNT.times do |n|
 
 		begin
 			while clock.total < MAX_TEST_DURATION do
-				POOL.with_resource do
+				# (2) (worker-1) is woken up
+				POOL.with_resource do # (3) Try to lock but can't.
 					Logger.debug('Sleep with resource #1')
 					sleep(0.001) # simulates a DB call
-				end
-
-				POOL.with_resource do
+				end # (0) ConditionVariable#signal (worker-0)
+				
+				POOL.with_resource do # (1) Immediately re-acquire the mutex here.
 					Logger.debug('Sleep with resource #2')
 					sleep(0.001) # simulates a DB call
 				end
-
+				
 				Logger.debug('Sleep without resource')
 				sleep(0.001) # simulates some other IO
 			end
