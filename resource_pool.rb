@@ -37,18 +37,20 @@ class ResourcePool
 				Logger.debug('Pool: Acquired resource after waiting')
 				return resource
 			end
-			
-			elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
-			
-			if elapsed > timeout
-				raise TimeoutError, "Unable to acquire resource after #{elapsed} seconds"
-			end
 
-			Logger.debug('Pool: Woken by signal but resource unavailable. Waiting again.')
-			@waiter.wait(@mutex, timeout - elapsed)
-			if resource = next_available
-				Logger.debug('Pool: Acquired resource after multiple waits')
-				return resource
+			loop do
+				elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
+
+				if elapsed > timeout
+					raise TimeoutError, "Unable to acquire resource after #{elapsed} seconds"
+				end
+
+				Logger.debug('Pool: Woken by signal but resource unavailable. Waiting again.')
+				@waiter.wait(@mutex, timeout - elapsed)
+				if resource = next_available
+					Logger.debug('Pool: Acquired resource after multiple waits')
+					return resource
+				end
 			end
 		end
 	end
