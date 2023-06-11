@@ -4,6 +4,8 @@
 #include <string>
 #include <pthread.h>
 #include <unistd.h>
+#include <vector>
+#include <memory>
 
 struct timespec g_start_time;
 
@@ -94,7 +96,7 @@ public:
 	void run() {
 		fprintf(stderr, "T+%ld %s: Started\n", time_offset_ms(), _name.c_str());
 		
-		for (int i = 0; i < 100; ++i) {
+		for (int i = 0; i < 1000; ++i) {
 			fprintf(stderr, "T+%ld %s: (A) Acquire...\n", time_offset_ms(), _name.c_str());
 			if (_pool.acquire()) {
 				fprintf(stderr, "T+%ld %s: (A) Acquired!\n", time_offset_ms(), _name.c_str());
@@ -103,6 +105,7 @@ public:
 				_pool.release();
 			} else {
 				fprintf(stderr, "T+%ld %s: Timed out!\n", time_offset_ms(), _name.c_str());
+				throw std::runtime_error("timeout");
 			}
 			
 			fprintf(stderr, "T+%ld %s: (B) Acquire...\n", time_offset_ms(), _name.c_str());
@@ -113,10 +116,11 @@ public:
 				_pool.release();
 			} else {
 				fprintf(stderr, "T+%ld %s: Timed out!\n", time_offset_ms(), _name.c_str());
+				throw std::runtime_error("timeout");
 			}
 			
 			fprintf(stderr, "T+%ld %s: (C) Work...\n", time_offset_ms(), _name.c_str());
-			usleep(10);
+			usleep(1000);
 		}
 	}
 };
@@ -125,12 +129,12 @@ int main(int argc, const char * argv[]) {
 	clock_gettime(CLOCK_REALTIME, &g_start_time);
 	
 	ResourcePool pool;
-	std::vector<Worker> workers;
+	std::vector<std::unique_ptr<Worker>> workers;
 	
 	// Create 3 workers:
 	for (int i = 0; i < 3; ++i) {
 		std::string name = std::string("worker-") + std::to_string(i);
-		workers.emplace_back(name, pool);
+		workers.push_back(std::move(std::make_unique<Worker>(name, pool)));
 	}
 	
 	// Wait for them to finish:
