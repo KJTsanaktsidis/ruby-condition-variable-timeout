@@ -61,6 +61,7 @@ class Worker
 				@pool.release
 			else
 				$stderr.puts "T+#{time_offset_ms} #{@name}: Timed out!"
+				raise "#{@name} timed out!"
 			end
 			
 			$stderr.puts "T+#{time_offset_ms} #{@name}: (B) Acquire..."
@@ -71,6 +72,7 @@ class Worker
 				@pool.release
 			else
 				$stderr.puts "T+#{time_offset_ms} #{@name}: Timed out!"
+				raise "#{@name} timed out!"
 			end
 			
 			$stderr.puts "T+#{time_offset_ms} #{@name}: (C) Work..."
