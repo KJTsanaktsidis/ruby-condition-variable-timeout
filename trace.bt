@@ -1,0 +1,36 @@
+usdt:/home/kj/.rbenv/versions/3.3.0-master/bin/ruby:ruby:thread__started {
+    printf("[%s] thread %d: thread__started\n", strftime("%H:%M:%S.%f", nsecs), arg0);
+}
+
+usdt:/home/kj/.rbenv/versions/3.3.0-master/bin/ruby:ruby:thread__ready {
+    printf("[%s] thread %d: thread__ready\n", strftime("%H:%M:%S.%f", nsecs), arg0);
+}
+
+usdt:/home/kj/.rbenv/versions/3.3.0-master/bin/ruby:ruby:thread__resumed {
+    printf("[%s] thread %d: thread__resumed\n", strftime("%H:%M:%S.%f", nsecs), arg0);
+}
+
+usdt:/home/kj/.rbenv/versions/3.3.0-master/bin/ruby:ruby:thread__suspended {
+    printf("[%s] thread %d: thread__suspended\n", strftime("%H:%M:%S.%f", nsecs), arg0);
+}
+
+usdt:/home/kj/.rbenv/versions/3.3.0-master/bin/ruby:ruby:thread__exited {
+    printf("[%s] thread %d: thread__exited\n", strftime("%H:%M:%S.%f", nsecs), arg0);
+}
+
+usdt:/home/kj/.rbenv/versions/3.3.0-master/bin/ruby:ruby:sync__wakeup {
+    $cd = (uint64 *)arg2;
+    printf("[%s] thread %d: sync__wakeup of %d (waiting for: %s; candidates: [%d %d %d %d %d %d %d %d])\n",
+        strftime("%H:%M:%S.%f", nsecs),arg0, arg1, str(arg3),
+        $cd[0], $cd[1], $cd[2], $cd[3], $cd[4], $cd[5], $cd[6], $cd[7]
+    );
+}
+
+usdt:/home/kj/.rbenv/versions/3.3.0-master/bin/ruby:ruby:sync__mutex__sleep {
+    printf("[%s] thread %d: sync__mutex__sleep (on: %s)\n", strftime("%H:%M:%S.%f", nsecs),arg0, str(arg1));
+}
+
+usdt:/home/kj/.rbenv/versions/3.3.0-master/bin/ruby:ruby:sync__mutex__woken {
+    printf("[%s] thread %d: sync__mutex__woken (on: %s, wake: %d)\n", strftime("%H:%M:%S.%f", nsecs),arg0, str(arg2), arg1);
+}
+
