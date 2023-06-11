@@ -74,7 +74,7 @@ class Worker
 			end
 			
 			$stderr.puts "T+#{time_offset_ms} #{@name}: (C) Work..."
-			sleep(0.01)
+			sleep(0.001)
 		end
 	end
 	
